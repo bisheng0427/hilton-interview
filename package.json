@@ -1,0 +1,12 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "app/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^5.5.2"
+  },
+  "proxy": "http://localhost:7001"
+}
