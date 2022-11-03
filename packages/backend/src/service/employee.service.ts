@@ -1,6 +1,5 @@
 import { Provide, Inject, Init } from '@midwayjs/decorator'
 import { Cluster, Collection } from 'couchbase'
-import * as uuid from 'uuid'
 
 import CouchbaseManager from '../utils/couchbase'
 
@@ -26,7 +25,7 @@ export class EmployeeService {
     }
 
     // Create and store a document
-    const res = await this.collection.upsert(uuid.v4(), guest)
+    const res = await this.collection.upsert('bb@test.com', guest)
     return res
   }
 

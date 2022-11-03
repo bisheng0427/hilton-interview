@@ -1,6 +1,7 @@
 import { Provide, Inject, Init } from '@midwayjs/decorator'
 import { Cluster, Collection, MutateInSpec } from 'couchbase'
 import * as moment from 'moment'
+import * as uuid from 'uuid'
 
 import { ReservationEntity, RESERVATION_STATUS } from '../entity/reservation'
 import CouchbaseManager from '../utils/couchbase'
@@ -30,36 +31,61 @@ export default class ReservationService {
     return res.rows[0]
   }
 
-  async getList(_date: string, _status: string) {
+  async getList(_params: { startDate?: string; endDate?: string; status?: string; guestId?: string; page: number; take: number }) {
+    const { startDate, endDate, status, guestId, page, take } = _params
     let query = `
-      SELECT g.firstName, g.lastName, g.mobile, r.arrivalTime, r.tableSize, r.status 
+      SELECT META(r).id as id, g.firstName, g.lastName, g.mobile, r.arrivalTime, r.guestId, r.tableSize, r.status, r.ctime
       FROM \`resturant\`._default.reservation as r
       JOIN \`resturant\`._default.guest as g ON KEYS r.guestId
       WHERE 1=1 
     `
-    if (_date && _date !== '') {
-      query += ` AND date=${moment(_date).format('YYYY-MM-DD')}'`
+    if (status && status !== '') {
+      query += ` AND r.status="${status}"`
     }
-    if (_status && _status !== '') {
-      query += ` AND status=${_status}'`
+    if (guestId) {
+      query += ` AND r.guestId="${guestId}"`
     }
+    if (startDate && startDate !== '') {
+      query += ` AND r.arrivalTime>="${startDate}"`
+    }
+    if (endDate && endDate !== '') {
+      query += ` AND r.arrivalTime<="${endDate}"`
+    }
+
+    query += ` ORDER BY r.arrivalTime desc`
+
+    query += ` OFFSET ${(page - 1) * take} LIMIT ${take}`
+
     const res = await this.cluster.query(query)
     return res.rows
   }
 
   async create(_reservation: ReservationEntity) {
-    console.log('_reservation', _reservation)
-    const res = await this.reservation.insert(_reservation.id, _reservation, { timeout: 5000 })
-    return res
+    const id = uuid.v4()
+    _reservation.status = RESERVATION_STATUS.TO_BE_COMFIRMED
+    await this.reservation.insert(
+      id,
+      {
+        ..._reservation,
+        ctime: moment().toISOString(),
+        mtime: moment().toISOString(),
+      },
+      { timeout: 5000 }
+    )
+    return { ..._reservation, id }
   }
 
   async updateField(_reservation: ReservationEntity) {
-    const res = await this.reservation.mutateIn(_reservation.id, [
-      MutateInSpec.upsert('arrivalTime', _reservation.arrivalTime),
-      MutateInSpec.upsert('tableSize', _reservation.tableSize),
-      MutateInSpec.upsert('mtime', moment().toISOString()),
-    ])
-    return res
+    console.log('_reservation', _reservation)
+    const { arrivalTime, tableSize, status } = _reservation
+
+    const mutations = [MutateInSpec.upsert('mtime', moment().toISOString())]
+    if (arrivalTime) mutations.push(MutateInSpec.upsert('arrivalTime', _reservation.arrivalTime))
+    if (tableSize) mutations.push(MutateInSpec.upsert('tableSize', _reservation.tableSize))
+    if (status) mutations.push(MutateInSpec.upsert('status', _reservation.status))
+
+    await this.reservation.mutateIn(_reservation.id, mutations)
+    return { ..._reservation }
   }
 
   async cancel(_reservation: ReservationEntity) {

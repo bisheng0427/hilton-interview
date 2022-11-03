@@ -1,5 +1,6 @@
 import { Provide, Inject, Init } from '@midwayjs/decorator'
 import { Cluster, Collection } from 'couchbase'
+import moment = require('moment')
 import * as uuid from 'uuid'
 
 import CouchbaseManager from '../utils/couchbase'
@@ -19,15 +20,32 @@ export class GuestService {
   }
 
   async addTestData() {
-    const guest = {
-      type: 'user',
-      name: 'Michael',
-      email: 'michael123@test.com',
-      interests: ['Swimming', 'Rowing'],
+    const guest1 = {
+      firstName: 'Bi',
+      lastName: 'Sheng01',
+      loginId: '120114531@qq.com',
+      password: '123',
+      mobile: '12345',
+      ctime: moment().toISOString(),
+      mtime: moment().toISOString(),
+    }
+    const guest2 = {
+      firstName: 'Bi',
+      lastName: 'Sheng02',
+      loginId: '120114532@qq.com',
+      password: '123',
+      mobile: '12345',
+      ctime: moment().toISOString(),
+      mtime: moment().toISOString(),
     }
 
     // Create and store a document
-    const res = await this.collection.upsert(uuid.v4(), guest)
-    return res
+    await this.collection.upsert('120114531@qq.com', guest1)
+    await this.collection.upsert('120114532@qq.com', guest2)
+    return { success: true }
+  }
+
+  async findByEmail(_email: string) {
+    return this.collection.get(_email)
   }
 }

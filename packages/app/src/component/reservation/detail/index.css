@@ -1,0 +1,5 @@
+@import '~antd/dist/antd.css';
+.reservation-form {
+  margin-top: 2rem;
+  padding: 0 10vw
+}

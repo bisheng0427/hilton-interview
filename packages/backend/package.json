@@ -15,8 +15,10 @@
     "@midwayjs/swagger": "^3.5.3",
     "@midwayjs/validate": "^3.0.0",
     "@types/uuid": "^8.3.4",
+    "apollo-server-koa": "^3.10.4",
     "class-transformer": "^0.5.1",
     "couchbase": "^4.1.2",
+    "graphql": "^15.8.0",
     "moment": "^2.29.4",
     "uuid": "^9.0.0"
   },

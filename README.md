@@ -31,5 +31,14 @@ $ lerna run dev-backend
 $ lerna run start-app
 ```
 
+### fill test employee/user data
+```
+$ curl http://localhost:7001/employee/testData
+$ curl http://localhost:7001/guest/testData
+```
+
 ## swagger
-http://127.0.0.1:7001/swagger-ui/index.html#/
+http://127.0.0.1:7001/swagger-ui/index.html#
+
+## graphql playground
+http://127.0.0.1:7001/graphql

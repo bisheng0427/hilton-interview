@@ -5,12 +5,17 @@ import * as info from '@midwayjs/info'
 import { join } from 'path'
 import * as swagger from '@midwayjs/swagger'
 import * as jwt from '@midwayjs/jwt'
-// import * as redis from '@midwayjs/redis'
+import { ApolloServer } from 'apollo-server-koa'
+import { readFileSync } from 'fs'
 
 import { ReportMiddleware } from './middleware/report.middleware'
 import CouchbaseManager from './utils/couchbase'
 import { DefaultErrorFilter } from './filter/default.filter'
 import { NotFoundFilter } from './filter/notfound.filter'
+import { resolvers } from './graphql/resolver'
+import { IMidwayContainer } from '@midwayjs/core'
+
+const typeDefs = readFileSync(join(__dirname, './graphql/schema.graphql'), { encoding: 'utf-8' })
 
 @Configuration({
   imports: [
@@ -38,10 +43,21 @@ export class ContainerLifeCycle {
   @Inject()
   dbManager: CouchbaseManager
 
-  async onReady() {
+  async onReady(context: IMidwayContainer) {
+    // const schema = await buildSchema({
+    //   resolvers: [ReservationResolver],
+    // })
+    const apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context: context,
+    })
+    await apolloServer.start()
     // add middleware
+    this.app.use(apolloServer.getMiddleware())
     this.app.useMiddleware([ReportMiddleware])
     this.app.useFilter([DefaultErrorFilter, NotFoundFilter])
+    // this.app.use(await this.app.generateMiddleware('graphql:GraphQLKoaMiddleware'))
     // add filter
     // this.app.useFilter([NotFoundFilter, DefaultErrorFilter]);
   }

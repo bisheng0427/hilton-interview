@@ -1,0 +1,17 @@
+0 silly argv {
+0 silly argv   _: [ 'add' ],
+0 silly argv   globs: [],
+0 silly argv   lernaVersion: '5.5.2',
+0 silly argv   '$0': '..\\..\\..\\..\\AppData\\Roaming\\npm\\node_modules\\lerna\\cli.js',
+0 silly argv   pkg: 'type-graphql'
+0 silly argv }
+1 notice cli v5.5.2
+2 verbose rootPath C:\Users\12011\Desktop\hilton-interview
+3 info versioning independent
+4 error FetchError: request to https://registry.npmjs.org/type-graphql failed, reason: getaddrinfo ENOTFOUND registry.npmjs.org
+4 error     at ClientRequest.<anonymous> (C:\Users\12011\Desktop\hilton-interview\node_modules\minipass-fetch\lib\index.js:130:14)
+4 error     at ClientRequest.emit (node:events:520:28)
+4 error     at TLSSocket.socketErrorListener (node:_http_client:442:9)
+4 error     at TLSSocket.emit (node:events:532:35)
+4 error     at emitErrorNT (node:internal/streams/destroy:157:8)
+4 error     at emitErrorCloseNT (node:internal/streams/destroy:122:3)

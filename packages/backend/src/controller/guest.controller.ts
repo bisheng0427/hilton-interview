@@ -34,7 +34,7 @@ export class GuestController {
     const reservation = { ...body }
     reservation.mtime = moment().toISOString()
 
-    return await this.reservationService.create(reservation)
+    return await this.reservationService.updateField(reservation)
   }
 
   @Post('/reservation/cancel', { summary: 'cancel reservation' })

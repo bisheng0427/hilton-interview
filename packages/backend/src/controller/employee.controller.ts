@@ -3,6 +3,7 @@ import { ApiBearerAuth } from '@midwayjs/swagger'
 import * as moment from 'moment'
 
 import { ReservationEntity } from '../entity/reservation'
+import { EmployeeService } from '../service/employee.service'
 // import { PermitMiddleware } from '../middleware/permit.middleware'
 import ReservationService from '../service/reservation.service'
 
@@ -11,6 +12,14 @@ import ReservationService from '../service/reservation.service'
 export default class EmployeeReservation {
   @Inject()
   reservationService: ReservationService
+
+  @Inject()
+  employeeSrv: EmployeeService
+
+  @Get('/testData', { description: 'build test data' })
+  async testData() {
+    this.employeeSrv.addTestData()
+  }
 
   @Get('/reservation/:id', { summary: 'get reservation detail by id' })
   async getDetail(@Param('id') id: string) {
@@ -22,8 +31,12 @@ export default class EmployeeReservation {
   }
 
   @Get('/reservation/list', { summary: 'get reservation list' })
-  async getList(@Param('date') date: string, @Param('status') status: string) {
-    return await this.reservationService.getList(date, status)
+  async getList(@Param('page') page: number, @Param('take') take: number, @Param('status') status: string) {
+    return await this.reservationService.getList({
+      page,
+      take,
+      status,
+    })
   }
 
   @Post('/reservation/update', { summary: 'update reservation' })
@@ -31,7 +44,7 @@ export default class EmployeeReservation {
     const reservation = { ...body }
     reservation.mtime = moment().toISOString()
 
-    return await this.reservationService.create(reservation)
+    return await this.reservationService.updateField(reservation)
   }
 
   @Post('/reservation/cancel', { summary: 'cancel reservation' })

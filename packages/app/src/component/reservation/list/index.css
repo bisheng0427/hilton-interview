@@ -1,0 +1,9 @@
+@import '~antd/dist/antd.css';
+
+.reservation-list {
+  padding: 0 5vw
+}
+
+.create-reservation-btn {
+  margin: 1rem 6.5rem;
+}

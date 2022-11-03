@@ -5,6 +5,7 @@ import { Context } from '@midwayjs/koa'
 import { GetResult, UserNotFoundError } from 'couchbase'
 
 import { EmployeeService } from '../service/employee.service'
+import { GuestService } from '../service/guest.service'
 
 @Controller('/auth')
 export class AuthController {
@@ -13,6 +14,9 @@ export class AuthController {
 
   @Inject()
   employeeService: EmployeeService
+
+  @Inject()
+  guestService: GuestService
 
   @Inject()
   jwtService: JwtService
@@ -35,6 +39,36 @@ export class AuthController {
       this.ctx.cookies.set('Authorization', `Bearer ${token}`)
       console.log('token', token)
       return { success: true }
+    } else {
+      return { success: false, message: 'email/password uncorrect' }
+    }
+  }
+
+  @Post('/guest')
+  async guestSignIn(@Body('email') email: string, @Body('password') password: string) {
+    let getResult: GetResult
+
+    try {
+      getResult = await this.guestService.findByEmail(email)
+    } catch (error) {
+      throw new UserNotFoundError()
+    }
+    const {
+      content: { id, loginId, firstName, lastName },
+    } = getResult
+    if (getResult.content.password === password) {
+      const token = this.jwtService.signSync({ email })
+      this.ctx.cookies.set('Authorization', `Bearer ${token}`)
+      console.log('token', token)
+      return {
+        success: true,
+        user: {
+          id,
+          loginId,
+          firstName,
+          lastName,
+        },
+      }
     } else {
       return { success: false, message: 'email/password uncorrect' }
     }
