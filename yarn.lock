@@ -4797,7 +4797,7 @@
     "apollo-reporting-protobuf" "^3.3.3"
     "apollo-server-env" "^4.2.1"
 
-"app@file:C:\\Users\\12011\\Desktop\\hilton-interview\\packages\\app":
+"app@file:C:\\Users\\12011\\Documents\\GitHub\\hilton-interview\\packages\\app":
   "resolved" "file:packages/app"
   "version" "0.1.0"
   dependencies:
@@ -11887,7 +11887,7 @@
     "update-notifier" "^5.0.0"
     "write-file-atomic" "^3.0.3"
 
-"my-midway-project@file:C:\\Users\\12011\\Desktop\\hilton-interview\\packages\\backend":
+"my-midway-project@file:C:\\Users\\12011\\Documents\\GitHub\\hilton-interview\\packages\\backend":
   "resolved" "file:packages/backend"
   "version" "1.0.0"
   dependencies:

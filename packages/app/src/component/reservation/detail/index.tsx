@@ -43,8 +43,8 @@ const ReservationDetail = () => {
             variables: {
               reservation: {
                 id,
-                arrivalTime: moment(arrivalTime).format('YYYY-MM-DD'),
-                tableSize: Number(tableSize),
+                arrivalTime: arrivalTime && moment(arrivalTime).format('YYYY-MM-DD'),
+                tableSize: tableSize && Number(tableSize),
                 status: status,
               },
             },
