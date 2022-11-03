@@ -5,7 +5,8 @@
 2. use lerna manage packages
 3. use couchbase as NoSQL database
 4. provide swagger to view and interact api
-5. use react in frontend(not finish)
+5. use graphql to interact with backend
+6. use react in frontend
 
 ## QuickStart
 
